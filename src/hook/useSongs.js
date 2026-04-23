@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const REMOTE_URL = import.meta.env.VITE_API_BASE_URL;
 const API_BASE = import.meta.env.PROD 
-  ? `${REMOTE_URL}/salac/songs` 
+  ? `${REMOTE_URL}/salac/songs`
   : '/api/salac/songs';
 
 export function useSongs() {
