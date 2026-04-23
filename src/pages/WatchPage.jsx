@@ -3,7 +3,6 @@ import { useSong } from '../hook/useSongs';
 import { parseVideoUrl } from '../utils/videoUrl';
 
 export default function WatchPage() {
-  // Removed the <{ id: string }> generic
   const { id } = useParams();
   const songId = id ? Number(id) : null;
   const { song, loading, error } = useSong(songId);
@@ -59,7 +58,6 @@ export default function WatchPage() {
                 className="absolute inset-0 w-full h-full"
               />
             ) : (
-              /* Fallback: open in new tab */
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-gradient-to-br from-[#1a1a2e] to-[#16213e]">
                 <svg className="w-20 h-20 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 3a9 9 0 1 0 9 9A9 9 0 0 0 12 3zm-2 13.5v-9l6 4.5z" />

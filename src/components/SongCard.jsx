@@ -17,7 +17,6 @@ export default function SongCard({ song }) {
             alt={song.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             onError={(e) => {
-              // Removed TypeScript 'as HTMLImageElement' and 'as HTMLElement'
               e.currentTarget.style.display = 'none';
               const placeholder = e.currentTarget.nextElementSibling;
               if (placeholder) placeholder.style.display = 'flex';

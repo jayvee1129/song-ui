@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-/**
- * Header Component
- * Handles the main navigation and search functionality.
- */
 export default function Header({ onSearch }) {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
@@ -14,7 +10,6 @@ export default function Header({ onSearch }) {
     if (onSearch) {
       onSearch(query.trim());
     }
-    // Navigate back to the home/grid view when searching
     navigate('/');
   };
 
@@ -49,7 +44,6 @@ export default function Header({ onSearch }) {
             value={query}
             onChange={(e) => {
               setQuery(e.target.value);
-              // Real-time filtering as the user types
               if (onSearch) onSearch(e.target.value);
             }}
             placeholder="Search songs, artists, albums…"

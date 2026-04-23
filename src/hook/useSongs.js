@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 
-const API_BASE = '/api/salac/songs';
+const REMOTE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_BASE = import.meta.env.PROD 
+  ? `${REMOTE_URL}/salac/songs` 
+  : '/api/salac/songs';
 
 export function useSongs() {
   const [songs, setSongs] = useState([]);
   const [error, setError] = useState(null);
-  // Start as true so we don't have to call setLoading(true) manually
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export function useSongs() {
       .catch(err => {
         if (err.name !== 'AbortError') setError(err.message);
       })
-      .finally(() => setLoading(false)); // Only need to set it to false when done
+      .finally(() => setLoading(false));
 
     return () => controller.abort();
   }, []);
