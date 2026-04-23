@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 
 const REMOTE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const API_BASE = import.meta.env.PROD 
-  ? `${REMOTE_URL}/salac/songs`
+  ? `https://api.allorigins.win/get?url=${encodeURIComponent(REMOTE_URL + '/salac/songs')}`
   : '/api/salac/songs';
 
 export function useSongs() {
@@ -19,7 +20,8 @@ export function useSongs() {
         return res.json();
       })
       .then(data => {
-        setSongs(data);
+        const finalData = import.meta.env.PROD ? JSON.parse(data.contents) : data;
+        setSongs(finalData);
         setError(null);
       })
       .catch(err => {
@@ -43,13 +45,18 @@ export function useSong(id) {
 
     const controller = new AbortController();
 
-    fetch(`${API_BASE}/${id}`, { signal: controller.signal })
+    const fetchUrl = import.meta.env.PROD
+      ? `https://api.allorigins.win/get?url=${encodeURIComponent(`${REMOTE_URL}/salac/songs/${id}`)}`
+      : `${API_BASE}/${id}`;
+
+    fetch(fetchUrl, { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then(data => {
-        setSong(data);
+        const finalData = import.meta.env.PROD ? JSON.parse(data.contents) : data;
+        setSong(finalData);
         setError(null);
       })
       .catch(err => {
