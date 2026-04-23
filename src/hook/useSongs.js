@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 const REMOTE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const API_BASE = import.meta.env.PROD 
-  ? `https://api.allorigins.win/get?url=${encodeURIComponent(REMOTE_URL + '/salac/songs')}`
+  ? `https://corsproxy.io/?${encodeURIComponent(REMOTE_URL + '/salac/songs')}`
   : '/api/salac/songs';
 
 export function useSongs() {
@@ -16,12 +16,11 @@ export function useSongs() {
 
     fetch(API_BASE, { signal: controller.signal })
       .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error(res.status === 408 ? "Server took too long to wake up. Please refresh!" : `HTTP ${res.status}`);
         return res.json();
       })
       .then(data => {
-        const finalData = import.meta.env.PROD ? JSON.parse(data.contents) : data;
-        setSongs(finalData);
+        setSongs(data);
         setError(null);
       })
       .catch(err => {
@@ -46,8 +45,8 @@ export function useSong(id) {
     const controller = new AbortController();
 
     const fetchUrl = import.meta.env.PROD
-      ? `https://api.allorigins.win/get?url=${encodeURIComponent(`${REMOTE_URL}/salac/songs/${id}`)}`
-      : `${API_BASE}/${id}`;
+      ? `https://corsproxy.io/?${encodeURIComponent(`${REMOTE_URL}/salac/songs/${id}`)}`
+      : `/api/salac/songs/${id}`; // Fixed this to use the local proxy path correctly
 
     fetch(fetchUrl, { signal: controller.signal })
       .then(res => {
@@ -55,8 +54,7 @@ export function useSong(id) {
         return res.json();
       })
       .then(data => {
-        const finalData = import.meta.env.PROD ? JSON.parse(data.contents) : data;
-        setSong(finalData);
+        setSong(data);
         setError(null);
       })
       .catch(err => {
