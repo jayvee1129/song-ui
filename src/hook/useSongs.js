@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 
-const REMOTE_URL = import.meta.env.VITE_API_BASE_URL;
-
-// Using the 'raw' AllOrigins proxy - it's like a direct tunnel
-const API_BASE = import.meta.env.PROD 
-  ? `https://api.allorigins.win/raw?url=${encodeURIComponent(REMOTE_URL + '/salac/songs')}`
-  : '/api/salac/songs';
+// Locally, Vite uses the proxy in vite.config.js
+// On Render, we will use a "Rewrite" rule to point /api to the real backend
+const API_BASE = '/api/salac/songs';
 
 export function useSongs() {
   const [songs, setSongs] = useState([]);
@@ -17,7 +14,7 @@ export function useSongs() {
 
     fetch(API_BASE, { signal: controller.signal })
       .then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status}: The server is likely waking up. Try refreshing in 30 seconds.`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}: The server might be waking up.`);
         return res.json();
       })
       .then(data => {
@@ -42,14 +39,9 @@ export function useSong(id) {
 
   useEffect(() => {
     if (!id) return;
-
     const controller = new AbortController();
 
-    const fetchUrl = import.meta.env.PROD
-      ? `https://api.allorigins.win/raw?url=${encodeURIComponent(`${REMOTE_URL}/salac/songs/${id}`)}`
-      : `/api/salac/songs/${id}`;
-
-    fetch(fetchUrl, { signal: controller.signal })
+    fetch(`${API_BASE}/${id}`, { signal: controller.signal })
       .then(res => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
